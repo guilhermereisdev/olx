@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "102106082011",
+    "project_id": "olx-app-gui",
+    "storage_bucket": "olx-app-gui.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:102106082011:android:aa74583c823a7328b5bafe",
+        "android_client_info": {
+          "package_name": "com.guilhermereisapps.olx"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "102106082011-iisesp8mlvs7h9ii1ndccc9cebk6h55v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBH5keDgqNzJJjLZLDe3uIJoIyAlXhXyeI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "102106082011-iisesp8mlvs7h9ii1ndccc9cebk6h55v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
