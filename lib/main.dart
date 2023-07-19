@@ -1,9 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:olx/telas/home.dart';
-import 'package:olx/temas/temas.dart';
+import 'package:olx/utils/temas.dart';
+import 'package:olx/views/screens/anuncios.dart';
 
-import 'firebase_options.dart';
+import 'configs/firebase_options.dart';
+import 'configs/route_generator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,7 +13,9 @@ void main() async {
   );
   runApp(MaterialApp(
     title: "OLX",
-    home: const Home(),
+    home: const Anuncios(),
+    initialRoute: "/",
+    onGenerateRoute: RouteGenerator.generateRoutes,
     theme: themeData,
     debugShowCheckedModeBanner: false,
   ));
