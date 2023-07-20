@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:olx/views/custom_views/custom_input.dart';
+import 'package:olx/views/widgets/custom_button.dart';
+import 'package:olx/views/widgets/custom_input.dart';
 
 import '../../enum/routes_names.dart';
 import '../../exception/custom_exception.dart';
@@ -189,7 +190,8 @@ class _LoginState extends State<Login> {
                     const Text("Cadastrar"),
                   ],
                 ),
-                ElevatedButton(
+                BotaoCustomizado(
+                  texto: _cadastrar ? "Cadastrar e entrar" : "Entrar",
                   onPressed: () async {
                     _exibirLoading(true);
                     _exibirMensagemErro(false);
@@ -210,16 +212,6 @@ class _LoginState extends State<Login> {
                       _exibirMensagemErro(true, mensagem: ex.toString());
                     }
                   },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.fromLTRB(32, 16, 32, 16),
-                  ),
-                  child: Text(
-                    _cadastrar ? "Cadastrar e entrar" : "Entrar",
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                    ),
-                  ),
                 ),
                 Visibility(
                   visible: _loadingVisibility,
