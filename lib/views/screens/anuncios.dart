@@ -15,7 +15,7 @@ class _AnunciosState extends State<Anuncios> {
   _escolhaMenuItem(String itemEscolhido) async {
     switch (itemEscolhido) {
       case "Meus anúncios":
-        Navigator.pushNamed(context, RoutesNames.anuncios);
+        Navigator.pushNamed(context, RoutesNames.meusAnuncios);
         break;
       case "Entrar/Cadastrar":
         Navigator.pushNamed(context, RoutesNames.login);
