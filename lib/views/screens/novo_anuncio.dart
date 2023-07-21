@@ -1,7 +1,12 @@
 import 'dart:io';
 
+import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:olx/views/widgets/custom_dropdown_menu_required_validator.dart';
+import 'package:olx/views/widgets/custom_input.dart';
 
 import '../widgets/custom_button.dart';
 
@@ -15,6 +20,23 @@ class NovoAnuncio extends StatefulWidget {
 class _NovoAnuncioState extends State<NovoAnuncio> {
   final _formKey = GlobalKey<FormState>();
   final List<File> _listaImagens = [];
+  final List<DropdownMenuItem<String>> _listaItensDropEstados = [];
+  String? _itemSelecionadoEstado;
+  final List<DropdownMenuItem<String>> _listaItensDropCategorias = [];
+  String? _itemSelecionadoCategoria;
+  TextEditingController tituloController = TextEditingController();
+  TextEditingController precoController = TextEditingController();
+  TextEditingController telefoneController = TextEditingController();
+  TextEditingController descricaoController = TextEditingController();
+
+  // regras de validação
+  final dropdownRequiredValidator =
+      CustomDropdownMenuRequiredValidator(errorText: "Campo obrigatório");
+  final requiredValidator = RequiredValidator(errorText: "Campo obrigatório");
+  final descricaoValidator = MultiValidator([
+    RequiredValidator(errorText: "Campo obrigatório"),
+    MaxLengthValidator(200, errorText: "Máximo de 200 caracteres"),
+  ]);
 
   _selecionarImagemGaleria() async {
     final ImagePicker picker = ImagePicker();
@@ -26,6 +48,34 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
         _listaImagens.add(File(imagemSelecionada.path));
       });
     }
+  }
+
+  _carregarItensDropdown() {
+    var categorias = <Map<String, String>>[
+      {'categoria': 'Imóvel', 'id': "imovel"},
+      {'categoria': 'Automóvel', 'id': "automovel"},
+      {'categoria': 'Moda', 'id': "moda"},
+      {'categoria': 'Eletrônico', 'id': "eletronico"},
+      {'categoria': 'Esportes', 'id': "esportes"}
+    ];
+
+    _listaItensDropCategorias.addAll(categorias.map((value) {
+      return DropdownMenuItem<String>(
+          value: value['id'], child: Text(value['categoria']!));
+    }).toList());
+
+    for (var estado in Estados.listaEstados) {
+      _listaItensDropEstados.add(DropdownMenuItem(
+        value: estado,
+        child: Text(estado),
+      ));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _carregarItensDropdown();
   }
 
   @override
@@ -159,14 +209,102 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
                   },
                 ),
                 // menus dropdown
-                const Row(
+                Row(
                   children: [
-                    Text("Estado"),
-                    Text("Categoria"),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          right: 4,
+                          top: 16,
+                          bottom: 16,
+                        ),
+                        child: DropdownButtonFormField(
+                          value: _itemSelecionadoEstado,
+                          hint: const Text("Estado"),
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                          ),
+                          items: _listaItensDropEstados,
+                          onChanged: (valor) {
+                            setState(() {
+                              _itemSelecionadoEstado = valor;
+                            });
+                          },
+                          validator: dropdownRequiredValidator,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          left: 4,
+                          top: 16,
+                          bottom: 16,
+                        ),
+                        child: DropdownButtonFormField(
+                          value: _itemSelecionadoCategoria,
+                          hint: const Text("Categoria"),
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                          ),
+                          items: _listaItensDropCategorias,
+                          onChanged: (valor) {
+                            setState(() {
+                              _itemSelecionadoCategoria = valor;
+                            });
+                          },
+                          validator: dropdownRequiredValidator,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
                 // caixas de texto e botões
-                const Text("Caixas de texto"),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: InputCustomizado(
+                    controller: tituloController,
+                    hint: "Título",
+                    validator: requiredValidator,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: InputCustomizado(
+                    controller: precoController,
+                    keyboardType: TextInputType.number,
+                    hint: "Preço",
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      CentavosInputFormatter()
+                    ],
+                    validator: requiredValidator,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: InputCustomizado(
+                    controller: telefoneController,
+                    keyboardType: TextInputType.phone,
+                    hint: "Telefone",
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      TelefoneInputFormatter()
+                    ],
+                    validator: requiredValidator,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: InputCustomizado(
+                    controller: descricaoController,
+                    hint: "Descrição (até 200 caracteres)",
+                    maxLines: null,
+                    validator: descricaoValidator,
+                  ),
+                ),
                 BotaoCustomizado(
                   texto: "Cadastrar anúncio",
                   onPressed: () {
