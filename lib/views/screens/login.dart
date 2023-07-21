@@ -162,17 +162,17 @@ class _LoginState extends State<Login> {
                   InputCustomizado(
                     controller: _controllerNome,
                     hint: "nome",
-                    type: TextInputType.name,
+                    keyboardType: TextInputType.name,
                   ),
                 InputCustomizado(
                   controller: _controllerEmail,
                   hint: "e-mail",
-                  type: TextInputType.emailAddress,
+                  keyboardType: TextInputType.emailAddress,
                 ),
                 InputCustomizado(
                   controller: _controllerSenha,
                   hint: "senha",
-                  type: TextInputType.visiblePassword,
+                  keyboardType: TextInputType.visiblePassword,
                   obscure: true,
                 ),
                 Row(
