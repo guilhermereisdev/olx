@@ -4,16 +4,17 @@ import 'package:flutter/services.dart';
 class InputCustomizado extends StatefulWidget {
   const InputCustomizado(
       {super.key,
-      required this.controller,
+      this.controller,
       required this.hint,
       this.obscure = false,
       this.autofocus = false,
       this.keyboardType = TextInputType.text,
       this.inputFormatters = const [],
       this.maxLines = 1,
-      this.validator});
+      this.validator,
+      this.onSaved});
 
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final String hint;
   final bool obscure;
   final bool autofocus;
@@ -21,6 +22,7 @@ class InputCustomizado extends StatefulWidget {
   final List<TextInputFormatter> inputFormatters;
   final int? maxLines;
   final FormFieldValidator<String>? validator;
+  final Function(String?)? onSaved;
 
   @override
   State<InputCustomizado> createState() => _InputCustomizadoState();
@@ -38,6 +40,7 @@ class _InputCustomizadoState extends State<InputCustomizado> {
       keyboardType: widget.keyboardType,
       inputFormatters: widget.inputFormatters,
       maxLines: widget.maxLines,
+      onSaved: widget.onSaved,
       validator: widget.validator,
       style: const TextStyle(fontSize: 20),
       decoration: InputDecoration(
