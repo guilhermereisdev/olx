@@ -1,10 +1,15 @@
 import 'dart:io';
 
 import 'package:brasil_fields/brasil_fields.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:olx/enum/routes_names.dart';
+import 'package:olx/models/anuncio.dart';
 import 'package:olx/views/widgets/custom_dropdown_menu_required_validator.dart';
 import 'package:olx/views/widgets/custom_input.dart';
 
@@ -24,10 +29,8 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
   String? _itemSelecionadoEstado;
   final List<DropdownMenuItem<String>> _listaItensDropCategorias = [];
   String? _itemSelecionadoCategoria;
-  TextEditingController tituloController = TextEditingController();
-  TextEditingController precoController = TextEditingController();
-  TextEditingController telefoneController = TextEditingController();
-  TextEditingController descricaoController = TextEditingController();
+  late Anuncio _anuncio;
+  late BuildContext _dialogcontext;
 
   // regras de validação
   final dropdownRequiredValidator =
@@ -72,10 +75,67 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
     }
   }
 
+  Future _uploadImagens() async {
+    FirebaseStorage storage = FirebaseStorage.instance;
+    Reference pastaRaiz = storage.ref();
+
+    for (var imagem in _listaImagens) {
+      String nomeImagem = DateTime.now().millisecondsSinceEpoch.toString();
+      Reference arquivo =
+          pastaRaiz.child("meus_anuncios").child(_anuncio.id).child(nomeImagem);
+
+      UploadTask uploadTask = arquivo.putFile(imagem);
+
+      await uploadTask.then((TaskSnapshot taskSnapshot) async {
+        String url = await taskSnapshot.ref.getDownloadURL();
+        _anuncio.fotos.add(url);
+      });
+    }
+  }
+
+  _salvarAnuncio() async {
+    _abrirDialog(_dialogcontext);
+    await _uploadImagens();
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? usuarioLogado = auth.currentUser;
+
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    await db
+        .collection("meus_anuncios")
+        .doc(usuarioLogado?.uid)
+        .collection("anuncios")
+        .doc(_anuncio.id)
+        .set(_anuncio.toMap())
+        .then((_) {
+      Navigator.pop(_dialogcontext);
+      Navigator.pushReplacementNamed(context, RoutesNames.meusAnuncios);
+    });
+  }
+
+  _abrirDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(height: 20),
+              Text("Salvando"),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     _carregarItensDropdown();
+    _anuncio = Anuncio();
   }
 
   @override
@@ -231,6 +291,9 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
                               _itemSelecionadoEstado = valor;
                             });
                           },
+                          onSaved: (estado) {
+                            estado != null ? _anuncio.estado = estado : null;
+                          },
                           validator: dropdownRequiredValidator,
                         ),
                       ),
@@ -255,6 +318,11 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
                               _itemSelecionadoCategoria = valor;
                             });
                           },
+                          onSaved: (categoria) {
+                            categoria != null
+                                ? _anuncio.categoria = categoria
+                                : null;
+                          },
                           validator: dropdownRequiredValidator,
                         ),
                       ),
@@ -265,15 +333,16 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: InputCustomizado(
-                    controller: tituloController,
                     hint: "Título",
                     validator: requiredValidator,
+                    onSaved: (titulo) {
+                      titulo != null ? _anuncio.titulo = titulo : null;
+                    },
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: InputCustomizado(
-                    controller: precoController,
                     keyboardType: TextInputType.number,
                     hint: "Preço",
                     inputFormatters: [
@@ -281,12 +350,14 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
                       CentavosInputFormatter()
                     ],
                     validator: requiredValidator,
+                    onSaved: (preco) {
+                      preco != null ? _anuncio.preco = preco : null;
+                    },
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: InputCustomizado(
-                    controller: telefoneController,
                     keyboardType: TextInputType.phone,
                     hint: "Telefone",
                     inputFormatters: [
@@ -294,22 +365,34 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
                       TelefoneInputFormatter()
                     ],
                     validator: requiredValidator,
+                    onSaved: (telefone) {
+                      telefone != null ? _anuncio.telefone = telefone : null;
+                    },
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: InputCustomizado(
-                    controller: descricaoController,
                     hint: "Descrição (até 200 caracteres)",
                     maxLines: null,
                     validator: descricaoValidator,
+                    onSaved: (descricao) {
+                      descricao != null ? _anuncio.descricao = descricao : null;
+                    },
                   ),
                 ),
                 BotaoCustomizado(
                   texto: "Cadastrar anúncio",
                   onPressed: () {
                     if (_formKey.currentState != null &&
-                        _formKey.currentState!.validate()) {}
+                        _formKey.currentState!.validate()) {
+                      // salva os campos
+                      _formKey.currentState?.save();
+                      // configura dialog context
+                      _dialogcontext = context;
+                      // salva o anúncio
+                      _salvarAnuncio();
+                    }
                   },
                 ),
               ],
