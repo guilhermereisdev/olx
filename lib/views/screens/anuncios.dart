@@ -22,11 +22,11 @@ class _AnunciosState extends State<Anuncios> {
         break;
       case "Deslogar":
         if (await _deslogarUsuario()) {
-          Navigator.pushNamedAndRemoveUntil(
-            context,
-            RoutesNames.anuncios,
-            (_) => false,
-          );
+          Future.microtask(() => Navigator.pushNamedAndRemoveUntil(
+                context,
+                RoutesNames.anuncios,
+                (_) => false,
+              ));
         }
         break;
     }
