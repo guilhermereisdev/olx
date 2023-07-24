@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:olx/enum/routes_names.dart';
 import 'package:olx/models/anuncio.dart';
 import 'package:olx/views/widgets/custom_dropdown_menu_required_validator.dart';
 import 'package:olx/views/widgets/custom_input.dart';
@@ -108,7 +107,7 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
         .set(_anuncio.toMap())
         .then((_) {
       Navigator.pop(_dialogcontext);
-      Navigator.pushReplacementNamed(context, RoutesNames.meusAnuncios);
+      Navigator.pop(context);
     });
   }
 
