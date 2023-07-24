@@ -40,14 +40,17 @@ class _MeusAnunciosState extends State<MeusAnuncios> {
     });
   }
 
-  _removerAnuncio(String idAnuncio) {
+  _removerAnuncio(String idAnuncio) async {
     FirebaseFirestore db = FirebaseFirestore.instance;
-    db
+    await db
         .collection("meus_anuncios")
         .doc(_idUsuarioLogado)
         .collection("anuncios")
         .doc(idAnuncio)
-        .delete();
+        .delete()
+        .then((_) async {
+      await db.collection("anuncios").doc(idAnuncio).delete();
+    });
   }
 
   @override
@@ -126,9 +129,10 @@ class _MeusAnunciosState extends State<MeusAnuncios> {
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.red,
                                   ),
-                                  onPressed: () {
-                                    _removerAnuncio(anuncio.id);
-                                    Navigator.of(context).pop();
+                                  onPressed: () async {
+                                    await _removerAnuncio(anuncio.id);
+                                    Future.microtask(
+                                        () => Navigator.of(context).pop());
                                   },
                                   child: const Text(
                                     "Excluir",
