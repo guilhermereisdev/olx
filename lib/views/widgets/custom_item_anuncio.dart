@@ -1,57 +1,79 @@
 import 'package:flutter/material.dart';
+import 'package:olx/models/anuncio.dart';
 
 class ItemAnuncio extends StatelessWidget {
-  const ItemAnuncio({super.key});
+  ItemAnuncio(
+      {super.key,
+      required this.anuncio,
+      this.onTapItem,
+      this.onPressedRemover});
+
+  Anuncio anuncio;
+  VoidCallback? onTapItem;
+  VoidCallback? onPressedRemover;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: onTapItem,
       child: Card(
         child: Padding(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Row(
             children: [
               // imagem
               SizedBox(
                 width: 120,
                 height: 120,
-                child: Container(color: Colors.orange),
+                child: Image.network(
+                  anuncio.fotos[0],
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, progress) {
+                    if (progress == null) return child;
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  },
+                ),
               ),
               // título e preço
-              const Expanded(
+              Expanded(
                 flex: 3,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 8,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Nintendo 64",
-                        style: TextStyle(
+                        anuncio.titulo,
+                        style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text("R\$ 1.200,00"),
+                      Text("R\$ ${anuncio.preco}"),
                     ],
                   ),
                 ),
               ),
               // botão remover
-              Expanded(
-                flex: 1,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                  ),
-                  child: const Icon(
-                    Icons.delete,
-                    color: Colors.white,
+              if (onPressedRemover != null)
+                Expanded(
+                  flex: 1,
+                  child: ElevatedButton(
+                    onPressed: onPressedRemover,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                    ),
+                    child: const Icon(
+                      Icons.delete,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
         ),
