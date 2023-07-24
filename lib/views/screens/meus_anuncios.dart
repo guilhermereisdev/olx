@@ -40,14 +40,17 @@ class _MeusAnunciosState extends State<MeusAnuncios> {
     });
   }
 
-  _removerAnuncio(String idAnuncio) {
+  _removerAnuncio(String idAnuncio) async {
     FirebaseFirestore db = FirebaseFirestore.instance;
-    db
+    await db
         .collection("meus_anuncios")
         .doc(_idUsuarioLogado)
         .collection("anuncios")
         .doc(idAnuncio)
-        .delete();
+        .delete()
+        .then((_) async {
+      await db.collection("anuncios").doc(idAnuncio).delete();
+    });
   }
 
   @override

@@ -89,9 +89,15 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
         .collection("anuncios")
         .doc(_anuncio.id)
         .set(_anuncio.toMap())
-        .then((_) {
-      Navigator.pop(_dialogcontext);
-      Navigator.pop(context);
+        .then((_) async {
+      await db
+          .collection("anuncios")
+          .doc(_anuncio.id)
+          .set(_anuncio.toMap())
+          .then((_) {
+        Navigator.pop(_dialogcontext);
+        Navigator.pop(context);
+      });
     });
   }
 
