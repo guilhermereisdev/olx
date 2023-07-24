@@ -126,9 +126,10 @@ class _MeusAnunciosState extends State<MeusAnuncios> {
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.red,
                                   ),
-                                  onPressed: () {
-                                    _removerAnuncio(anuncio.id);
-                                    Navigator.of(context).pop();
+                                  onPressed: () async {
+                                    await _removerAnuncio(anuncio.id);
+                                    Future.microtask(
+                                        () => Navigator.of(context).pop());
                                   },
                                   child: const Text(
                                     "Excluir",
