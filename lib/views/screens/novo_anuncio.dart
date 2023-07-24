@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:olx/models/anuncio.dart';
+import 'package:olx/utils/configuracoes.dart';
 import 'package:olx/views/widgets/custom_dropdown_menu_required_validator.dart';
 import 'package:olx/views/widgets/custom_input.dart';
 
@@ -24,9 +25,9 @@ class NovoAnuncio extends StatefulWidget {
 class _NovoAnuncioState extends State<NovoAnuncio> {
   final _formKey = GlobalKey<FormState>();
   final List<File> _listaImagens = [];
-  final List<DropdownMenuItem<String>> _listaItensDropEstados = [];
+  List<DropdownMenuItem<String>>? _listaItensDropEstados = [];
   String? _itemSelecionadoEstado;
-  final List<DropdownMenuItem<String>> _listaItensDropCategorias = [];
+  List<DropdownMenuItem<String>>? _listaItensDropCategorias = [];
   String? _itemSelecionadoCategoria;
   late Anuncio _anuncio;
   late BuildContext _dialogcontext;
@@ -53,25 +54,8 @@ class _NovoAnuncioState extends State<NovoAnuncio> {
   }
 
   _carregarItensDropdown() {
-    var categorias = <Map<String, String>>[
-      {'categoria': 'Imóvel', 'id': "imovel"},
-      {'categoria': 'Automóvel', 'id': "automovel"},
-      {'categoria': 'Moda', 'id': "moda"},
-      {'categoria': 'Eletrônico', 'id': "eletronico"},
-      {'categoria': 'Esportes', 'id': "esportes"}
-    ];
-
-    _listaItensDropCategorias.addAll(categorias.map((value) {
-      return DropdownMenuItem<String>(
-          value: value['id'], child: Text(value['categoria']!));
-    }).toList());
-
-    for (var estado in Estados.listaEstados) {
-      _listaItensDropEstados.add(DropdownMenuItem(
-        value: estado,
-        child: Text(estado),
-      ));
-    }
+    _listaItensDropCategorias = Configuracoes.getCategorias();
+    _listaItensDropEstados = Configuracoes.getRegioes();
   }
 
   Future _uploadImagens() async {
