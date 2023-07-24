@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:olx/enum/routes_names.dart';
+import 'package:olx/views/widgets/custom_item_anuncio.dart';
 
 class MeusAnuncios extends StatefulWidget {
   const MeusAnuncios({super.key});
@@ -22,7 +23,12 @@ class _MeusAnunciosState extends State<MeusAnuncios> {
         foregroundColor: Colors.white,
         child: const Icon(Icons.add),
       ),
-      body: Container(),
+      body: ListView.builder(
+        itemBuilder: (_, indice) {
+          return ItemAnuncio();
+        },
+        itemCount: 4,
+      ),
     );
   }
 }
