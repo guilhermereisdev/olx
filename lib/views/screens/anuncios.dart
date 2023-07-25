@@ -205,6 +205,7 @@ class _AnunciosState extends State<Anuncios> {
                     } else {
                       return Expanded(
                         child: ListView.builder(
+                          itemCount: querySnapshot.docs.length,
                           itemBuilder: (_, indice) {
                             List<DocumentSnapshot> anuncios =
                                 querySnapshot.docs.toList();
@@ -215,15 +216,19 @@ class _AnunciosState extends State<Anuncios> {
 
                             return ItemAnuncio(
                               anuncio: anuncio,
-                              onTapItem: () {},
+                              onTapItem: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  RoutesNames.detalhesAnuncio,
+                                  arguments: anuncio,
+                                );
+                              },
                             );
                           },
-                          itemCount: querySnapshot.docs.length,
                         ),
                       );
                     }
                 }
-                return Container();
               },
             ),
           ],
