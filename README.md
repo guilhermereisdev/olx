@@ -10,9 +10,10 @@ Autor: Guilherme Reis - [LinkedIn](https://www.linkedin.com/in/guilhermereisdev/
 ### Recursos do app
 
 - Exibe os produtos à venda de todos os usuários (mesmo sem o usuário atual estar logado).
+- Permite filtrar os produtos por estado e categoria.
 - Permite criação de conta para acesso.
 - Usuário pode gerenciar cadastrando/excluindo os próprios produtos que quiser vender.
-- No cadastro de produtos para venda é possível incluir fotos, descrição, preço e telefone para contato.
+- No cadastro de produtos para venda é possível incluir fotos, descrição, categoria, preço, telefone para contato e estado onde o vendedor mora.
 
 ### Técnicas utilizadas
 
