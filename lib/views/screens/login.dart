@@ -16,19 +16,16 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  final TextEditingController _controllerNome =
-      TextEditingController(text: "Guilherme Reis");
-  final TextEditingController _controllerEmail =
-      TextEditingController(text: "guilhermereis2009@hotmail.com");
-  final TextEditingController _controllerSenha =
-      TextEditingController(text: "12345678");
+  final TextEditingController _controllerNome = TextEditingController();
+  final TextEditingController _controllerEmail = TextEditingController();
+  final TextEditingController _controllerSenha = TextEditingController();
   bool _cadastrar = false;
   String _mensagemErro = "";
   bool _errorContainerVisibility = false;
   bool _loadingVisibility = false;
 
   bool _validarCampos() {
-    if (_controllerNome.text.trim().isNotEmpty) {
+    if (_controllerNome.text.trim().isEmpty && _cadastrar == false) {
       if (_controllerEmail.text.trim().isNotEmpty) {
         if (_controllerSenha.text.trim().length > 7) {
           return true;
