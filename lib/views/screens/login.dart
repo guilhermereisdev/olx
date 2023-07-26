@@ -25,7 +25,7 @@ class _LoginState extends State<Login> {
   bool _loadingVisibility = false;
 
   bool _validarCampos() {
-    if (_controllerNome.text.trim().isNotEmpty) {
+    if (_controllerNome.text.trim().isEmpty && _cadastrar == false) {
       if (_controllerEmail.text.trim().isNotEmpty) {
         if (_controllerSenha.text.trim().length > 7) {
           return true;
